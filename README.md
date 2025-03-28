@@ -1,86 +1,113 @@
-# wpp_project
-Download automático de imagens de grupo do wpp
-# 🤖 Bot de WhatsApp para Vistorias
+# 📦 Projeto: Bot de WhatsApp - Vistorias Automáticas
 
-Este projeto automatiza o processo de coleta de fotos enviadas em um grupo do WhatsApp. Ele organiza as imagens por autor e data e armazena localmente para uso em relatórios.
+Este bot automatiza a coleta de fotos e mensagens enviadas em um grupo do WhatsApp, separando por autor e data, salvando tudo localmente e enviando por e-mail às 08:00 todos os dias.
 
 ---
 
-## 🚀 Funcionalidades Atuais
+## ⚙️ Funcionalidades
 
-- Conexão automática com o WhatsApp via sessão salva
-- Download de todas as imagens enviadas no grupo no dia atual
-- Organização das imagens por autor e data
-- Escrita assíncrona otimizada para melhor desempenho
-- Estrutura modular e de fácil manutenção
+- Conecta ao WhatsApp via WhatsApp Web
+- Baixa fotos do grupo especificado
+- Agrupa por autor e data
+- Salva mensagens de texto associadas
+- Envia tudo por e-mail automaticamente
+- Gera logs da execução
+- Utiliza Docker + Docker Compose para execução isolada
 
 ---
 
-## 🛠️ Como usar
+## 📁 Estrutura do Projeto
 
-### 1. Instalar dependências
-
-```bash
-npm install
+```
+wpp_project/
+├── index.js
+├── config.js
+├── .env.example
+├── package.json
+├── Dockerfile
+├── docker-compose.yml
+├── .gitignore
+├── .eslintrc.json
+├── .prettierrc
+├── .vscode/settings.json
+├── services/
+│   ├── baixarFotos.js
+│   ├── enviarEmail.js
+│   ├── logger.js
+│   └── whatsappClient.js
 ```
 
-### 2. Configurar o `.env`
+---
 
-Crie um arquivo `.env` baseado no `.env.example` com os dados:
+## 🚀 Como executar (via Docker)
+
+### 1. Crie um arquivo `.env` baseado no `.env.example`
 
 ```env
-NOME_DO_GRUPO=Nome exato do grupo do WhatsApp
-WPP_SESSAO_TEMPORARIA=false
+EMAIL_REMETENTE=seuemail@gmail.com
+EMAIL_SENHA=sua_senha_de_app
+EMAIL_DESTINO=leogbpa@gmail.com
+NOME_DO_GRUPO=Grupo das Vistorias
 ```
 
-> ⚠️ Certifique-se de que o nome do grupo está igual ao WhatsApp.
+> 🛡️ Use uma **senha de app** do Gmail: https://myaccount.google.com/apppasswords
 
-### 3. Rodar o bot
+---
+
+### 2. Construa a imagem Docker
 
 ```bash
-npm start
+docker-compose build
+```
+
+### 3. Execute o projeto
+
+```bash
+docker-compose up
+```
+
+> A primeira vez vai pedir o QR Code do WhatsApp.
+
+---
+
+### 4. Parar a execução
+
+```bash
+docker-compose down
 ```
 
 ---
 
-## 🧪 Modo QR Code
+## ✅ Scripts úteis com npm
 
-Se quiser usar modo temporário (QR toda vez):
-
-```env
-WPP_SESSAO_TEMPORARIA=true
+```bash
+npm install           # Instala dependências
+npm start             # Executa o bot localmente
+npm run lint          # Verifica estilo de código
+npm run lint:fix      # Corrige automaticamente
+npm run format        # Formata com Prettier
 ```
 
 ---
 
-## 📂 Estrutura de pastas geradas
+## 🧪 Testar manualmente (sem esperar 08h)
 
+Altere o `index.js` para rodar diretamente sem agendamento com cron:
+
+```js
+inicializarCliente(async (client) => {
+    const ontem = new Date();
+    ontem.setDate(ontem.getDate() - 1);
+    const dataOntem = ontem.toISOString().split('T')[0];
+
+    const mensagensPorAutor = await baixarFotosDoGrupo(client);
+    await enviarRelatorioPorEmail(dataOntem, mensagensPorAutor);
+});
 ```
-imagens/
-├── 2025-03-28/
-│   ├── João/
-│   │   ├── 2025-03-28_abc123.jpg
-│   ├── Maria/
-│   │   ├── 2025-03-28_def456.jpg
-```
 
 ---
 
-## 📝 Histórico de commits
+## 👤 Autor
 
-- `v1.0` - Estrutura básica e funcional finalizada
-- `v1.1` - Otimização com escrita assíncrona e downloads em paralelo
-- `v1.2` - Login automático reativado
-
----
-
-## 👨‍💻 Desenvolvedor
-
-Projeto criado e mantido por [Seu Nome].  
-Contatos e melhorias futuras são bem-vindas!
-
----
-
-## 📜 Licença
-
-Este projeto é de uso pessoal e não comercial.
+Projeto desenvolvido por [Seu Nome].  
+Para dúvidas ou suporte, entre em contato.

@@ -1,0 +1,19 @@
+# Dependências do Node
+node_modules/
+
+# Logs da execução
+logs/
+*.log
+
+# Fotos baixadas
+imagens/
+
+# Dados de autenticação do WhatsApp
+.wwebjs_auth/
+
+# Variáveis sensíveis
+.env
+
+# Arquivos temporários ou de sistema
+.DS_Store
+.vscode/
